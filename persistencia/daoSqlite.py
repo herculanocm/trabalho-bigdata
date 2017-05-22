@@ -12,8 +12,8 @@ class BancoSqlite(object):
         """Conectando ao SQLite3 database."""
 
         self.connection = sqlite3.connect(self.database)
-        self.cursor = self.connection.cursor()
         self.connected = True
+        return self.connection
 
     def close(self):
         """Fechando a conexao """
@@ -26,6 +26,7 @@ class BancoSqlite(object):
         if not self.connected:
             self.connect()
         queries = []
+        self.cursor = self.connection.cursor()
         self.cursor.execute(statement.strip())
         data = self.cursor.fetchall()
         """queries.append(data)"""
