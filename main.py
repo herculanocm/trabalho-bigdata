@@ -26,5 +26,5 @@ con =  bancoSqlite.connect()
 df = pd.read_sql_query("SELECT * from tb_clientes", con)
 
 
-for d in df:
+for d in list(df.values):
     print(d)
