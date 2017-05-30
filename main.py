@@ -44,4 +44,4 @@ while True:
     elif op == 1:
         print(retorna_lista_vendedores(df))
 
-print("alteração de codigo no git")
+
