@@ -45,3 +45,4 @@ while True:
         print(retorna_lista_vendedores(df))
 
 
+#TESTE DE COMMIT
