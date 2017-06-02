@@ -23,6 +23,21 @@ bancoSqlite = BancoSqlite('base/exercício_final.db')
 
 # Connecta o Banco
 con =  bancoSqlite.connect()
+cursor = con.cursor()
+
+# Acesso a tabela de produtos
+cursor.execute("""
+    SELECT
+        id_produto,
+        nom_produto,
+        cat_produto,
+        val_produto
+    FROM tb_produtos""")
+
+print("{:<15}{:<20}{:<20}{:<20}".format("id_produto", "nom_produto", "cat_produto", "val_produto"))
+print("–" * 95)
+for linha in cursor.fetchall():
+    print("{0[0]:<15}{0[1]:<20}{0[2]:<20}{0[3]:<10}".format(linha))
 
 #df = pd.read_sql_query("SELECT * from tb_clientes", con)
 
@@ -72,5 +87,3 @@ while True:
         print(vendas_x_vendedor(df))
     elif op == 4:
         print(produtos_x_vendedor(df))
-
-#TESTE DE COMMIT
