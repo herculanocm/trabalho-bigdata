@@ -2,49 +2,10 @@ import pandas as pd
 from persistencia.daoSqlite import BancoSqlite
 
 
-"""
-# Inicia o Banco 
-bancoSqlite = BancoSqlite('base/exercício_final.db')
-
-# Connecta o Banco 
-bancoSqlite.connect()
-
-# Realiza o comando SQL
-data = bancoSqlite.execute("SELECT * FROM tb_clientes")
-
-#Fecha a con 
-bancoSqlite.close()
-
-"""
 
 
 # Inicia o Banco
 bancoSqlite = BancoSqlite('base/exercício_final.db')
-
-# Connecta o Banco
-con =  bancoSqlite.connect()
-cursor = con.cursor()
-
-# Acesso a tabela de produtos
-cursor.execute("""
-    SELECT
-        id_produto,
-        nom_produto,
-        cat_produto,
-        val_produto
-    FROM tb_produtos""")
-
-print("{:<15}{:<20}{:<20}{:<20}".format("id_produto", "nom_produto", "cat_produto", "val_produto"))
-print("–" * 95)
-for linha in cursor.fetchall():
-    print("{0[0]:<15}{0[1]:<20}{0[2]:<20}{0[3]:<10}".format(linha))
-
-#df = pd.read_sql_query("SELECT * from tb_clientes", con)
-
-
-# for d in list(df.values):
-#     print(d)
-#,names['id_cliente','id_produto','num_nf', 'dia_pedido','mês_pedido','ano_pedido','id_vendedor','qtd_vendida']
 
 
 def retorna_lista_vendedores(df):
@@ -63,6 +24,10 @@ def vendas_x_vendedor(df):
 def produtos_x_vendedor(df):
     return df.loc[:, ['id_vendedor', 'qtd_vendida']].groupby('id_vendedor').sum().sort_values(by='qtd_vendida', ascending=False)
 
+def receita_x_vendedor(df_pedidos, df_produtos):
+    df_join = df_pedidos.join(df_produtos.set_index('id_produto'), on = 'id_produto')
+    return df_join.loc[:, ['id_vendedor', 'val_produto']].groupby('id_vendedor').sum().sort_values(by='val_produto', ascending=False)
+
 while True:
     strMenu = """ 
     Digite uma das opções abaixo do Menu: 
@@ -70,6 +35,8 @@ while True:
     2) Selecionar um Vendedor.
     3) Quantidade de Vendas x Vendedor.
     4) Quantidade de Produtos x Vendedor.
+    5) Quantidade de Receita x Vendedor.
+    
              
     Digite 0 para sair.
     """
@@ -87,3 +54,7 @@ while True:
         print(vendas_x_vendedor(df))
     elif op == 4:
         print(produtos_x_vendedor(df))
+    elif op == 5:
+        print(receita_x_vendedor(df, pd.read_sql_query("SELECT * from tb_produtos", bancoSqlite.connect())))
+    else:
+        print('Opção desconhecida, escolha uma opção valida.')
